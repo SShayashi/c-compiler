@@ -158,8 +158,6 @@ typedef enum {
   ND_NEQ,   // !=
   ND_EQBIG, // >=
   ND_BIG,   // >
-  ND_EQSML, // <=
-  ND_SML,   // <
 } NodeKind;
 
 typedef struct Node Node;
