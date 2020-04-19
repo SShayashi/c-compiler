@@ -1,10 +1,9 @@
 #include <ctype.h>
 #include <stdarg.h>
-#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <9cc.h>
+#include "9cc.h"
 
 // エラーを報告するための関数
 // printfと同じ引数を取る
@@ -134,33 +133,6 @@ Token *tokenize(char *p)
   return head.next;
 }
 
-//
-// Parser
-//
-typedef enum
-{
-  ND_ADD,   // +
-  ND_SUB,   // -
-  ND_MUL,   // *
-  ND_DIV,   // /
-  ND_NUM,   // 整数
-  ND_EQ,    // ==
-  ND_NEQ,   // !=
-  ND_EQBIG, // >=
-  ND_BIG,   // >
-} NodeKind;
-
-typedef struct Node Node;
-
-// 抽象構文木のノードの型
-struct Node
-{
-  NodeKind kind; // ノードの型
-  Node *lhs;     // 左辺
-  Node *rhs;     // 右辺
-  int val;       // kindがND_NUMの場合のみ使う
-};
-
 Node *new_node(NodeKind kind, Node *lhs, Node *rhs)
 {
   Node *node = calloc(1, sizeof(Node));
@@ -177,14 +149,6 @@ Node *new_node_num(int val)
   node->val = val;
   return node;
 }
-
-Node *expr();
-Node *equality();
-Node *relational();
-Node *add();
-Node *mul();
-Node *unary();
-Node *primary();
 
 // expr = equality
 Node *expr()
@@ -333,32 +297,4 @@ void gen(Node *node)
   }
 
   printf("  push rax\n");
-}
-
-int main(int argc, char **argv)
-{
-  if (argc != 2)
-  {
-    error("引数の個数が正しくありません");
-    return 1;
-  }
-
-  // トークナイズしてパースする
-  user_input = argv[1];
-  token = tokenize(user_input);
-  Node *node = expr();
-
-  // アセンブリの前半部分を出力
-  printf(".intel_syntax noprefix\n");
-  printf(".global main\n");
-  printf("main:\n");
-
-  // 抽象構文木を下りながらコード生成
-  gen(node);
-
-  // スタックトップに式全体の値が残っているはずなので
-  // それをRAXにロードして関数からの返り値とする
-  printf("  pop rax\n");
-  printf("  ret\n");
-  return 0;
 }

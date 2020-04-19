@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdbool.h>
 
 //
 // Tokenizer
@@ -22,8 +23,55 @@ struct Token
     int len;        // トークンの長さ
 };
 
+//
+// Parser
+//
+typedef enum
+{
+    ND_ADD,   // +
+    ND_SUB,   // -
+    ND_MUL,   // *
+    ND_DIV,   // /
+    ND_NUM,   // 整数
+    ND_EQ,    // ==
+    ND_NEQ,   // !=
+    ND_EQBIG, // >=
+    ND_BIG,   // >
+} NodeKind;
+
+typedef struct Node Node;
+
+// 抽象構文木のノードの型
+struct Node
+{
+    NodeKind kind; // ノードの型
+    Node *lhs;     // 左辺
+    Node *rhs;     // 右辺
+    int val;       // kindがND_NUMの場合のみ使う
+};
+
+// グローバル変数
 // 現在着目しているトークン
 extern Token *token;
-
 // 入力プログラム
 extern char *user_input;
+
+// 関数群
+extern void error(char *fmt, ...);
+extern void error_at(char *loc, char *fmt, ...);
+extern bool consume(char *op);
+extern void expect(char *op);
+extern int expect_number();
+extern bool at_eof();
+extern Token *new_token(TokenKind kind, Token *cur, char *str, int len);
+extern Token *tokenize(char *p);
+extern Node *new_node(NodeKind kind, Node *lhs, Node *rhs);
+extern Node *new_node_num(int val);
+extern Node *expr();
+extern Node *equality();
+extern Node *relational();
+extern Node *add();
+extern Node *mul();
+extern Node *unary();
+extern Node *primary();
+extern void gen(Node *node);
