@@ -42,6 +42,17 @@ bool consume(char *op)
     return true;
 }
 
+// 次のトークンが変数の場合，トークンを1つ詠み進めて
+// 変数のトークン
+Token *consume_indent()
+{
+    if (token->kind != TK_INDENT)
+        error("変数ではありません");
+    Token *intent = token;
+    token = token->next;
+    return intent;
+}
+
 // 次のトークンが期待している記号のときには、トークンを1つ読み進める。
 // それ以外の場合にはエラーを報告する。
 void expect(char *op)

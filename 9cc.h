@@ -63,14 +63,20 @@ extern char *user_input;
 // 関数群
 extern void error(char *fmt, ...);
 extern void error_at(char *loc, char *fmt, ...);
+
+Token *consume_indent();
 extern bool consume(char *op);
 extern void expect(char *op);
 extern int expect_number();
 extern bool at_eof();
 extern Token *new_token(TokenKind kind, Token *cur, char *str, int len);
 extern Token *tokenize(char *p);
+
+// parce.c
 extern Node *new_node(NodeKind kind, Node *lhs, Node *rhs);
 extern Node *new_node_num(int val);
+extern void program();
+extern Node *stmt();
 extern Node *expr();
 extern Node *equality();
 extern Node *relational();

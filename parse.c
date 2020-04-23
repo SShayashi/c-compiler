@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include "9cc.h"
 
+Node *code[100];
+
 Node *new_node(NodeKind kind, Node *lhs, Node *rhs)
 {
     Node *node = calloc(1, sizeof(Node));
@@ -19,11 +21,37 @@ Node *new_node_num(int val)
     return node;
 }
 
+// program = stmt*
+void program()
+{
+    int i = 0;
+    while (!at_eof())
+        code[i++] = stmt();
+    code[i] = NULL;
+}
+
+// stmt = expr ";"
+Node *stmt()
+{
+    Node *node = expr();
+    expect(";");
+    return node;
+}
+
 // expr = equality
 Node *expr()
 {
-    Node *node = equality();
+    Node *node = assign();
     return node;
+}
+
+Node *assign()
+{
+    Node *node = equality();
+    if (consume("="))
+        node = new_node(ND_ASSIGN, node, assign());
+    else
+        return node;
 }
 
 // equality = relaitonal ("==" relational | "!=" relational)*
@@ -99,7 +127,7 @@ Node *unary()
     return primary();
 }
 
-// primary = "(" expr ")" | num
+// primary = num | indent |  "(" expr ")"
 Node *primary()
 {
     // 次のトークンが"("なら，"(" expr ")" のはず
@@ -110,6 +138,14 @@ Node *primary()
         return node;
     }
 
-    // そうでなければ数値
+    Token *tok = consume_indent();
+    if (tok)
+    {
+        Node *node = calloc(1, sizeof(Node));
+        node->kind = ND_LVAR;
+        node->offset = (tok->str[0] - 'a' + 1) * 8; // 変数はa~zのみなのでa~の差分をとっている．
+        return node;
+    }
+
     return new_node_num(expect_number());
 }
