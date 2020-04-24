@@ -32,7 +32,6 @@ Token *tokenize(char *p)
     Token head;
     head.next = NULL;
     Token *cur = &head;
-
     while (*p)
     {
         // 空白文字をスキップ
@@ -58,7 +57,7 @@ Token *tokenize(char *p)
             continue;
         }
 
-        if (strchr("+-*/()<>;", *p))
+        if (strchr("+-*/()<>;=", *p))
         {
             cur = new_token(TK_RESERVED, cur, p++, 1);
             continue;
@@ -72,7 +71,6 @@ Token *tokenize(char *p)
             cur->len = p - q;
             continue;
         }
-
         error_at(token->str, "トークナイズできません");
     }
     new_token(TK_EOF, cur, p, 0);
