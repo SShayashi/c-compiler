@@ -59,12 +59,15 @@ struct Node
 extern Token *token;
 // 入力プログラム
 extern char *user_input;
+// プログラムの各行が入った配列
+extern Node *code[100];
 
 // 関数群
+
+// container.c
 extern void error(char *fmt, ...);
 extern void error_at(char *loc, char *fmt, ...);
-
-Token *consume_indent();
+extern bool consume_indent();
 extern bool consume(char *op);
 extern void expect(char *op);
 extern int expect_number();
@@ -78,6 +81,7 @@ extern Node *new_node_num(int val);
 extern void program();
 extern Node *stmt();
 extern Node *expr();
+extern Node *assign();
 extern Node *equality();
 extern Node *relational();
 extern Node *add();

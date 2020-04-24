@@ -43,14 +43,12 @@ bool consume(char *op)
 }
 
 // 次のトークンが変数の場合，トークンを1つ詠み進めて
-// 変数のトークン
-Token *consume_indent()
+// 変数のトークンを返す，それ以外はNullを返す
+bool consume_indent()
 {
     if (token->kind != TK_INDENT)
-        error("変数ではありません");
-    Token *intent = token;
-    token = token->next;
-    return intent;
+        return false;
+    return true;
 }
 
 // 次のトークンが期待している記号のときには、トークンを1つ読み進める。
@@ -60,7 +58,7 @@ void expect(char *op)
     if (token->kind != TK_RESERVED ||
         strlen(op) != token->len ||
         memcmp(token->str, op, token->len))
-        error_at(token->str, "'%c'ではありません", op);
+        error_at(token->str, "'%s'ではありません", op);
     token = token->next;
 }
 

@@ -38,13 +38,14 @@ Node *stmt()
     return node;
 }
 
-// expr = equality
+// expr = assign
 Node *expr()
 {
     Node *node = assign();
     return node;
 }
 
+// assign =  equality ( '=' equality )?
 Node *assign()
 {
     Node *node = equality();
@@ -138,12 +139,14 @@ Node *primary()
         return node;
     }
 
-    Token *tok = consume_indent();
-    if (tok)
+    if (consume_indent())
     {
         Node *node = calloc(1, sizeof(Node));
+        Token *intent = token;
+        token = token->next;
+
         node->kind = ND_LVAR;
-        node->offset = (tok->str[0] - 'a' + 1) * 8; // 変数はa~zのみなのでa~の差分をとっている．
+        node->offset = (intent->str[0] - 'a' + 1) * 8; // 変数はa~zのみなのでa~の差分をとっている．
         return node;
     }
 
