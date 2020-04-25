@@ -41,9 +41,13 @@ Token *tokenize(char *p)
             continue;
         }
 
-        if ('a' <= *p && *p <= 'z')
+        if (isalpha(*p))
         {
-            cur = new_token(TK_INDENT, cur, p++, 1);
+            char *q = p;
+            cur = new_token(TK_INDENT, cur, p, 0);
+            while (isalpha(*p))
+                p++;
+            cur->len = p - q;
             continue;
         }
 

@@ -55,4 +55,6 @@ a = 3;
 b = 5 * 6 - 8; 
 a+b / 2;
 '
+
+assert 2 'hoge=2;'
 echo OK
