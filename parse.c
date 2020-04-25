@@ -1,8 +1,18 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "9cc.h"
 
 Node *code[100];
+LVar *locals = NULL;
+
+LVar *find_lvar(Token *tok)
+{
+    for (LVar *var = locals; var; var = var->next)
+        if (var->len == tok->len && !memcmp(tok->str, var->name, var->len))
+            return var;
+    return NULL;
+}
 
 Node *new_node(NodeKind kind, Node *lhs, Node *rhs)
 {
@@ -142,11 +152,29 @@ Node *primary()
     if (consume_indent())
     {
         Node *node = calloc(1, sizeof(Node));
-        Token *intent = token;
+        Token *tok = token;
         token = token->next;
-
         node->kind = ND_LVAR;
-        node->offset = (intent->str[0] - 'a' + 1) * 8; // 変数はa~zのみなのでa~の差分をとっている．
+
+        LVar *lvar = find_lvar(tok);
+        if (lvar)
+        {
+            node->offset = lvar->offset;
+        }
+        else
+        {
+
+            lvar = calloc(1, sizeof(LVar));
+            lvar->next = locals;
+            lvar->name = tok->str;
+            lvar->len = tok->len;
+            if (locals)
+                lvar->offset = locals->offset + 8;
+            else
+                lvar->offset = 0;
+            node->offset = lvar->offset;
+            locals = lvar;
+        }
         return node;
     }
 

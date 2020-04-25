@@ -24,6 +24,17 @@ struct Token
     int len;        // トークンの長さ
 };
 
+typedef struct LVar LVar;
+
+// ローカル変数の型
+struct LVar
+{
+    LVar *next; // 次の変数かNULL
+    char *name; // 変数の名前
+    int len;    // 名前の長さ
+    int offset; // RBPからのオフセット
+};
+
 //
 // Parser
 //
@@ -61,6 +72,8 @@ extern Token *token;
 extern char *user_input;
 // プログラムの各行が入った配列
 extern Node *code[100];
+// ローカル変数
+extern LVar *locals;
 
 // 関数群
 
@@ -76,6 +89,7 @@ extern Token *new_token(TokenKind kind, Token *cur, char *str, int len);
 extern Token *tokenize(char *p);
 
 // parce.c
+extern LVar *find_lvar(Token *tok);
 extern Node *new_node(NodeKind kind, Node *lhs, Node *rhs);
 extern Node *new_node_num(int val);
 extern void program();
@@ -88,4 +102,6 @@ extern Node *add();
 extern Node *mul();
 extern Node *unary();
 extern Node *primary();
+
+// codegen.c
 extern void gen(Node *node);
