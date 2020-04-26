@@ -57,4 +57,15 @@ a+b / 2;
 '
 
 assert 2 'hoge=2;'
+assert 10 '
+hoge=3;
+huga=4;
+hoge+huga+3;
+'
+
+assert 1 '
+return 1;
+hoge = 2;
+fuga = 3;'
+
 echo OK

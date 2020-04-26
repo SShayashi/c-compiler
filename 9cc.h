@@ -83,7 +83,7 @@ extern LVar *locals;
 extern void error(char *fmt, ...);
 extern void error_at(char *loc, char *fmt, ...);
 extern bool consume_return();
-extern bool consume_indent();
+extern Token *consume_indent();
 extern bool consume(char *op);
 extern void expect(char *op);
 extern int expect_number();

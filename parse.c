@@ -160,11 +160,10 @@ Node *primary()
         return node;
     }
 
-    if (consume_indent())
+    Token *tok = consume_indent();
+    if (tok)
     {
         Node *node = calloc(1, sizeof(Node));
-        Token *tok = token;
-        token = token->next;
         node->kind = ND_LVAR;
 
         LVar *lvar = find_lvar(tok);

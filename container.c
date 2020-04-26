@@ -42,6 +42,8 @@ bool consume(char *op)
     return true;
 }
 
+// 次のトークンがreturnの場合，トークンを一つ進めて
+//
 bool consume_return()
 {
     if (token->kind != TK_RETURN)
@@ -52,11 +54,13 @@ bool consume_return()
 
 // 次のトークンが変数の場合，トークンを1つ詠み進めて
 // 変数のトークンを返す，それ以外はNullを返す
-bool consume_indent()
+Token *consume_indent()
 {
     if (token->kind != TK_INDENT)
-        return false;
-    return true;
+        return NULL;
+    Token *intent = token;
+    token = token->next;
+    return intent;
 }
 
 // 次のトークンが期待している記号のときには、トークンを1つ読み進める。
