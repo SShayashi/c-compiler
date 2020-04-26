@@ -10,6 +10,7 @@ typedef enum
     TK_RESERVED, // 記号
     TK_INDENT,   // 識別子
     TK_NUM,      // 整数トークン
+    TK_RETURN,   // returnを表す
     TK_EOF,      // 入力の終わりを表すトークン
 } TokenKind;
 
@@ -51,6 +52,7 @@ typedef enum
     ND_BIG,    // >
     ND_ASSIGN, // =
     ND_LVAR,   // ローカル変数
+    ND_RETURN  // return
 } NodeKind;
 
 typedef struct Node Node;
@@ -80,6 +82,7 @@ extern LVar *locals;
 // container.c
 extern void error(char *fmt, ...);
 extern void error_at(char *loc, char *fmt, ...);
+extern bool consume_return();
 extern bool consume_indent();
 extern bool consume(char *op);
 extern void expect(char *op);

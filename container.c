@@ -42,6 +42,14 @@ bool consume(char *op)
     return true;
 }
 
+bool consume_return()
+{
+    if (token->kind != TK_RETURN)
+        return false;
+    token = token->next;
+    return true;
+}
+
 // 次のトークンが変数の場合，トークンを1つ詠み進めて
 // 変数のトークンを返す，それ以外はNullを返す
 bool consume_indent()
