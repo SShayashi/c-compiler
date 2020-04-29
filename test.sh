@@ -68,4 +68,10 @@ return 1;
 hoge = 2;
 fuga = 3;'
 
+assert 1 '
+if (1 < 2)
+  return 1;
+return 3;
+'
+
 echo OK

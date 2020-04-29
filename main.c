@@ -56,6 +56,20 @@ Token *tokenize(char *p)
             continue;
         }
 
+        if (strncmp(p, "if", 2) == 0 && !is_alnum(p[2]))
+        {
+            cur = new_token(TK_IF, cur, p, 2);
+            p += 2;
+            continue;
+        }
+
+        if (strncmp(p, "for", 3) == 0 && !is_alnum(p[3]))
+        {
+            cur = new_token(TK_FOR, cur, p, 3);
+            p += 3;
+            continue;
+        }
+
         if (isalpha(*p))
         {
             char *q = p;
@@ -127,8 +141,9 @@ int main(int argc, char **argv)
         printf("  pop rax\n");
     }
 
-    // スタックトップに式全体の値が残っているはずなので
-    // それをRAXにロードして関数からの返り値とする
+    // エピローグ
+    // 最後の式の結果がRAXに残っているのでそれが返り値になる
+    // RSPがリターンアドレスを指している状態にして，ret命令を呼ぶ必要あり
     printf("  mov rsp, rbp\n");
     printf("  pop rbp\n");
     printf("  ret\n");

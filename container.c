@@ -42,8 +42,16 @@ bool consume(char *op)
     return true;
 }
 
+bool consume_token(TokenKind kind)
+{
+    if (token->kind != kind)
+        return false;
+    token = token->next;
+    return true;
+}
+
 // 次のトークンがreturnの場合，トークンを一つ進めて
-//
+// trueを返す，それ以外の場合falseを返す．
 bool consume_return()
 {
     if (token->kind != TK_RETURN)
