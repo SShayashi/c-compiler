@@ -11,6 +11,7 @@ typedef enum
     TK_INDENT,   // 識別子
     TK_NUM,      // 整数トークン
     TK_IF,       // if
+    TK_ELSE,     // else
     TK_FOR,      // for
     TK_RETURN,   // returnを表す
     TK_EOF,      // 入力の終わりを表すトークン
@@ -55,6 +56,7 @@ typedef enum
     ND_ASSIGN, // =
     ND_LVAR,   // ローカル変数
     ND_IF,     // if
+    ND_ELSE,   // else
     ND_FOR,    // for
     ND_RETURN  // return
 } NodeKind;

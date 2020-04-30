@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include "9cc.h"
 
+int label_num = 0;
+
 void gen_lval(Node *node)
 {
     if (node->kind != ND_LVAR)
@@ -34,14 +36,24 @@ void gen(Node *node)
         return;
     case ND_IF:
         gen(node->lhs);
-
         printf("  pop rax\n");
         printf("  cmp rax, 0\n");
-        printf("  je .Lend1\n");
-        gen(node->rhs);
-        printf(".Lend1:");
+        if (node->rhs->kind == ND_ELSE)
+        {
+            printf("  je .Lelse1\n");
+            gen(node->rhs->lhs);
+            printf("  jmp .Lend1\n");
+            printf(".Lelse1:\n");
+            gen(node->rhs->rhs);
+            printf(".Lend1:\n");
+        }
+        else
+        {
+            printf("  je .Lend1\n");
+            gen(node->rhs);
+            printf(".Lend1:\n");
+        }
         return;
-
     case ND_RETURN:
         gen(node->lhs);
         printf("  pop rax\n");

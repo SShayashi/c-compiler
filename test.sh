@@ -79,4 +79,17 @@ if (1 > 2)
 return 3;
 '
 
+assert 3 '
+if (1 > 2)
+  return 2;
+else
+  return 3;
+'
+assert 2 '
+if (1 < 2)
+  return 2;
+else
+  return 3;
+'
+
 echo OK

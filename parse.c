@@ -61,9 +61,14 @@ Node *stmt()
         expect("(");
         node->lhs = expr();
         expect(")");
-        node->rhs = stmt();
+
+        Node *truenode = stmt();
+        if (consume_token(TK_ELSE))
+            node->rhs = new_node(ND_ELSE, truenode, stmt());
+        else
+            node->rhs = truenode;
+
         return node;
-        // TODO 1トークン先読みしてelseがあるかないかチェックする必要あり
     }
     else if (consume_token(TK_FOR))
     {
