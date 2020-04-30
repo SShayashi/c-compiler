@@ -132,4 +132,17 @@ else
   return 3;
 '
 
+# 2回以上，別のstmtでif文が使える
+assert 31 '
+a = 10;
+if(1)
+  b = 20;
+
+if(1)
+  a = 11;
+
+return a+b;
+'
+
+
 echo OK
