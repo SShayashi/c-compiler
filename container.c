@@ -75,10 +75,16 @@ Token *consume_indent()
 // それ以外の場合にはエラーを報告する。
 void expect(char *op)
 {
-    if (token->kind != TK_RESERVED ||
-        strlen(op) != token->len ||
-        memcmp(token->str, op, token->len))
-        error_at(token->str, "'%s'ではありません", op);
+    if (token->kind != TK_RESERVED)
+    {
+        error("len:%d, kind:%d, str:%s, nextstr: %s", token->len, token->kind, token->str, token->next->str);
+        error_at(token->str, "'%s'ではありません，トークンの型が違います, トークンの型は%dです", op, token->kind);
+    }
+
+    if (strlen(op) != token->len)
+        error_at(token->str, "'%s'ではありません，トークンの長さが違います，トークンの長さは%dです", op, token->len);
+    if (memcmp(token->str, op, token->len))
+        error_at(token->str, "'%s'ではありません，memcmpの結果が違います", op);
     token = token->next;
 }
 
