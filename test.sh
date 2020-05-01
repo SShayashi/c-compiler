@@ -144,5 +144,29 @@ if(1)
 return a+b;
 '
 
+# for 文が利用できる
+assert 50 '
+a = 0;
+for(i=0;i<50;i++)
+  a = a+1;
+return a;
+'
+## for文の条件部分がオプショナルになっている
+assert 50 '
+a = 0;
+for(;a<51;)
+  a = a+1;
+return a;
+'
+## for文の条件部分がオプショナルになっており，その中でif文が利用できる
+assert 51 '
+a = 0;
+for(;;)
+  if (a < 51)
+    a = a+1;
+  else
+    return a;
+'
+
 
 echo OK
