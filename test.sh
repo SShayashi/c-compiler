@@ -61,8 +61,8 @@ a+b / 2;
 '
 
 
-# 1文字以上の変数が利用できる
-assert 2 'hoge=2;'
+# # 1文字以上の変数が利用できる
+# assert 2 'hoge=2;'
 
 # 変数のために用意している領域は動的に確保できる
 assert 10 '
@@ -143,30 +143,52 @@ if(1)
 
 return a+b;
 '
+assert 18 '
+a = 30;
+if(0)
+  a = a+2;
+else
+  a = a-2;
+if(0)
+  a = a+10;
+else
+  a = a-10;
+
+return a;
+'
 
 # for 文が利用できる
 assert 50 '
 a = 0;
-for(i=0;i<50;i++)
+for(i=0;i<50;i=i+1)
   a = a+1;
 return a;
 '
 ## for文の条件部分がオプショナルになっている
-assert 50 '
-a = 0;
-for(;a<51;)
+assert 1 '
+for(;;)
+  return 1;
+'
+assert 51 '
+for(a = 0;a<51;)
   a = a+1;
 return a;
 '
+assert 2 '
+for(a = 2;; a=a+2)
+  return a;
+'
 ## for文の条件部分がオプショナルになっており，その中でif文が利用できる
-assert 51 '
-a = 0;
-for(;;)
-  if (a < 51)
-    a = a+1;
-  else
+assert 10 '
+a = 10;
+for(;;a = a+10)
+  return a;
+'
+assert 6 '
+a = 1;
+for(;;a = a+1)
+  if(a>5)
     return a;
 '
-
 
 echo OK
