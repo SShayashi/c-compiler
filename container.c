@@ -93,7 +93,7 @@ void expect(char *op)
 int expect_number()
 {
     if (token->kind != TK_NUM)
-        error_at(token->str, "数ではありません%d", token->kind);
+        error_at(token->str, "数ではありません, kind:%d, str:%s", token->kind, token->str);
     int val = token->val;
     token = token->next;
     return val;
