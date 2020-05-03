@@ -136,7 +136,7 @@ int main(int argc, char **argv)
     printf("main:\n");
 
     // プロローグ
-    // 変数26個分の領域確保
+    // 変数の領域確保
     printf("  push rbp\n");
     printf("  mov rbp, rsp\n");
     if (locals)
