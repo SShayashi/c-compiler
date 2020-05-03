@@ -42,6 +42,7 @@ void program()
 
 /* stmt = expr ";"
  *       | "if" "(" expr ")" stmt ("else" stmt)?
+ *       | "for" "(" expr? ";" expr? ";" expr? ")" stmt
  *       | "return" expr ";"
  */
 Node *stmt()
@@ -72,6 +73,39 @@ Node *stmt()
     }
     else if (consume_token(TK_FOR))
     {
+        node = calloc(1, sizeof(Node));
+        node->kind = ND_FOR;
+
+        Node *node_first = calloc(1, sizeof(Node));
+        node_first->kind = ND_FOR;
+
+        Node *node_second = calloc(1, sizeof(Node));
+        node_second->kind = ND_FOR;
+
+        node->rhs = node_first;
+        node_first->rhs = node_second;
+
+        // for (A;B;C) D
+        expect("(");
+        if (!consume(";"))
+        {
+            node->lhs = expr(); // A
+            expect(";");
+        }
+
+        if (!consume(";"))
+        {
+            node_first->lhs = expr(); // B
+            expect(";");
+        }
+
+        if (!consume(")"))
+        {
+            node_second->lhs = expr(); // C
+            expect(")");
+        }
+        node_second->rhs = stmt(); // D
+        return node;
     }
     else
     {

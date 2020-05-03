@@ -38,22 +38,41 @@ void gen(Node *node)
         gen(node->lhs);
         printf("  pop rax\n");
         printf("  cmp rax, 0\n");
-        int cur_num = label_num++;
+        int cur_if_num = label_num++;
         if (node->rhs->kind == ND_ELSE)
         {
-            printf("  je .Lelse%d\n", cur_num);
+            printf("  je .Lelse%d\n", cur_if_num);
             gen(node->rhs->lhs);
-            printf("  jmp .Lend%d\n", cur_num);
-            printf(".Lelse%d:\n", cur_num);
+            printf("  jmp .Lend%d\n", cur_if_num);
+            printf(".Lelse%d:\n", cur_if_num);
             gen(node->rhs->rhs);
-            printf(".Lend%d:\n", cur_num);
+            printf(".Lend%d:\n", cur_if_num);
         }
         else
         {
-            printf("  je .Lend%d\n", cur_num);
+            printf("  je .Lend%d\n", cur_if_num);
             gen(node->rhs);
-            printf(".Lend%d:\n", cur_num);
+            printf(".Lend%d:\n", cur_if_num);
         }
+        return;
+    case ND_FOR:
+        // for(A;B;C) D
+        if (node->lhs)
+            gen(node->lhs); // A
+        int cur_for_num = label_num++;
+        printf(".Lbegin%d:\n", cur_for_num);
+        if (node->rhs->lhs)
+        {
+            gen(node->rhs->lhs); // B
+            printf("  pop rax\n");
+            printf("  cmp rax, 0\n");
+            printf("  je .Lend%d\n", cur_for_num);
+        }
+        gen(node->rhs->rhs->rhs); // D
+        if (node->rhs->rhs->lhs)  // C
+            gen(node->rhs->rhs->lhs);
+        printf("  jmp .Lbegin%d\n", cur_for_num);
+        printf(".Lend%d:\n", cur_for_num);
         return;
     case ND_RETURN:
         gen(node->lhs);
