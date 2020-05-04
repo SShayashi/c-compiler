@@ -41,6 +41,7 @@ void program()
 }
 
 /* stmt = expr ";"
+ *       | "{" stmt* "}"
  *       | "if" "(" expr ")" stmt ("else" stmt)?
  *       | "for" "(" expr? ";" expr? ";" expr? ")" stmt
  *       | "while" "(" expr ")" stmt
@@ -116,6 +117,19 @@ Node *stmt()
         node->lhs = expr();
         expect(")");
         node->rhs = stmt();
+        return node;
+    }
+    else if (consume("{"))
+    {
+        node = calloc(1, sizeof(Node));
+        node->kind = ND_BLOCK;
+        Node *p = node;
+        while (!consume("}"))
+        {
+            p->next = stmt();
+            p = p->next;
+        }
+        p = NULL;
         return node;
     }
     else

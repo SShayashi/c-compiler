@@ -60,6 +60,7 @@ typedef enum
     ND_ELSE,   // else
     ND_FOR,    // for
     ND_WHILE,  // while
+    ND_BLOCK,  // {}
     ND_RETURN  // return
 } NodeKind;
 
@@ -73,6 +74,7 @@ struct Node
     Node *rhs;     // 右辺
     int val;       // kindがND_NUMの場合のみ使う
     int offset;    // kindがND_LVARの場合のみ使う
+    Node *next;    // kindがND_BLOCKの場合のみ使う
 };
 
 // グローバル変数
