@@ -191,4 +191,20 @@ for(;;a = a+1)
     return a;
 '
 
+# while文が利用できる
+assert 10 '
+a = 1;
+while(a<10)
+  a = a+1;
+return a;
+'
+## while文の中でif文が利用できる
+assert 3 '
+a = 3;
+while(a<10)
+  if(a)
+    return a;
+return -1;
+'
+
 echo OK

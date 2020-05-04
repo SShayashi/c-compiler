@@ -13,6 +13,7 @@ typedef enum
     TK_IF,       // if
     TK_ELSE,     // else
     TK_FOR,      // for
+    TK_WHILE,    // while
     TK_RETURN,   // returnを表す
     TK_EOF,      // 入力の終わりを表すトークン
 } TokenKind;
@@ -58,6 +59,7 @@ typedef enum
     ND_IF,     // if
     ND_ELSE,   // else
     ND_FOR,    // for
+    ND_WHILE,  // while
     ND_RETURN  // return
 } NodeKind;
 

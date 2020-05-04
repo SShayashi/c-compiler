@@ -43,6 +43,7 @@ void program()
 /* stmt = expr ";"
  *       | "if" "(" expr ")" stmt ("else" stmt)?
  *       | "for" "(" expr? ";" expr? ";" expr? ")" stmt
+ *       | "while" "(" expr ")" stmt
  *       | "return" expr ";"
  */
 Node *stmt()
@@ -105,6 +106,16 @@ Node *stmt()
             expect(")");
         }
         node_second->rhs = stmt(); // D
+        return node;
+    }
+    else if (consume_token(TK_WHILE))
+    {
+        node = calloc(1, sizeof(Node));
+        node->kind = ND_WHILE;
+        expect("(");
+        node->lhs = expr();
+        expect(")");
+        node->rhs = stmt();
         return node;
     }
     else

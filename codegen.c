@@ -35,6 +35,7 @@ void gen(Node *node)
         printf("  push rdi\n");
         return;
     case ND_IF:
+    {
         gen(node->lhs);
         printf("  pop rax\n");
         printf("  cmp rax, 0\n");
@@ -55,7 +56,10 @@ void gen(Node *node)
             printf(".Lend%d:\n", cur_if_num);
         }
         return;
+    }
     case ND_FOR:
+    {
+
         // for(A;B;C) D
         if (node->lhs)
             gen(node->lhs); // A
@@ -74,6 +78,20 @@ void gen(Node *node)
         printf("  jmp .Lbegin%d\n", cur_for_num);
         printf(".Lend%d:\n", cur_for_num);
         return;
+    }
+    case ND_WHILE:
+    {
+        int cur_while_num = label_num++;
+        printf(".Lbegin%d:\n", cur_while_num);
+        gen(node->lhs);
+        printf("  pop rax\n");
+        printf("  cmp rax, 0\n");
+        printf("  je .Lend%d\n", cur_while_num);
+        gen(node->rhs);
+        printf("  jmp  .Lbegin%d\n", cur_while_num);
+        printf(".Lend%d:\n", cur_while_num);
+        return;
+    }
     case ND_RETURN:
         gen(node->lhs);
         printf("  pop rax\n");

@@ -77,6 +77,13 @@ Token *tokenize(char *p)
             continue;
         }
 
+        if (strncmp(p, "while", 5) == 0 && !is_alnum(p[5]))
+        {
+            cur = new_token(TK_WHILE, cur, p, 5);
+            p += 5;
+            continue;
+        }
+
         if (isalpha(*p))
         {
             char *q = p;
