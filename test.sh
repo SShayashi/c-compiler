@@ -16,7 +16,7 @@ assert() {
     fi
 }
 
-# 基礎的な子息演算ができる
+# 基礎的な四則演算ができる
 assert 0 "0;"
 assert 42 "42;"
 assert 21 "5+20-4;"
@@ -205,6 +205,49 @@ while(a<10)
   if(a)
     return a;
 return -1;
+'
+
+# block機能
+## blockで囲んだif文が書ける
+assert 1 '
+a = 1;
+if(a){
+  return 1;
+} else {
+  return 0;
+}
+'
+
+## blockで囲むだけのことができる
+assert 10 '
+{
+  a = 10;
+  b = 20;
+  c = 30;
+}
+return a;
+'
+## blockで囲んだfor文が書ける
+assert 3 '
+a = 0;
+b = 0;
+for(i = 0; i<3; i=i+1)
+{
+  a = a + i*i;
+  b = b + i;
+}
+return b;
+'
+
+## blockで囲んでwhile文が書ける
+assert 100 '
+a = 0;
+while(a<100){
+  for(i = 0;i<10; i=i+1){
+    a = a+1;
+  }
+}
+return a;
 '
 
 echo OK
