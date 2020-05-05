@@ -242,8 +242,9 @@ Node *primary()
     }
 
     Token *tok = consume_indent();
-    if (tok && consume("()"))
+    if (tok && consume("("))
     {
+        expect(")");
         // 関数
         Node *node = calloc(1, sizeof(Node));
         node->kind = ND_FUNC;

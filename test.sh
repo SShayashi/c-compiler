@@ -252,7 +252,8 @@ return a;
 
 # 引数なしの関数が呼び出せる
 assert 1'
-return foo();
+foo();
+return 1; 
 '
 
 echo OK

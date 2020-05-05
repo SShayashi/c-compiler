@@ -40,6 +40,16 @@ struct LVar
     int offset; // RBPからのオフセット
 };
 
+typedef struct Function Function;
+
+struct Function
+{
+    Function *next; // 次の関数を指す
+    char *name;     // 関数の名前
+    int *len;       // 名前の長さ
+                    // 引数の数（TODO:）
+};
+
 //
 // Parser
 //
@@ -56,6 +66,7 @@ typedef enum
     ND_BIG,    // >
     ND_ASSIGN, // =
     ND_LVAR,   // ローカル変数
+    ND_FUNC,   // 関数
     ND_IF,     // if
     ND_ELSE,   // else
     ND_FOR,    // for
