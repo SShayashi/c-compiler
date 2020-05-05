@@ -230,7 +230,7 @@ Node *unary()
     return primary();
 }
 
-// primary = num | indent |  "(" expr ")"
+// primary = num | indent ( "(" ")")? |  "(" expr ")"
 Node *primary()
 {
     // 次のトークンが"("なら，"(" expr ")" のはず
@@ -242,8 +242,19 @@ Node *primary()
     }
 
     Token *tok = consume_indent();
-    if (tok)
+    if (tok && consume("()"))
     {
+        // 関数
+        Node *node = calloc(1, sizeof(Node));
+        node->kind = ND_FUNC;
+
+        // TODO 名前を保存
+        // TODO 二重定義かどうかを調べることも必要
+        return node;
+    }
+    else if (tok)
+    {
+        // 変数
         Node *node = calloc(1, sizeof(Node));
         node->kind = ND_LVAR;
 
