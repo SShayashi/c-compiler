@@ -244,11 +244,20 @@ Node *primary()
     Token *tok = consume_indent();
     if (tok && consume("("))
     {
-        expect(")");
-        // 関数
         Node *node = calloc(1, sizeof(Node));
         node->kind = ND_FUNC;
-
+        Node *p = node;
+        while (!consume(")"))
+        {
+            p->args = new_node_num(expect_number());
+            p = p->args;
+            if (!consume(","))
+            {
+                expect(")");
+                break;
+            }
+        }
+        p->args = NULL;
         // TODO 名前を保存
         // TODO 二重定義かどうかを調べることも必要
         return node;

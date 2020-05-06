@@ -252,7 +252,7 @@ return a;
 
 # 引数なしの関数が呼び出せる
 assert 1'
-foo();
+foo(3,4);
 return 1; 
 '
 

@@ -2,6 +2,12 @@
 #include "9cc.h"
 
 int label_num = 0;
+char *arg_labels[4] = {
+    "rdi",
+    "rsi",
+    "rds",
+    "rcx",
+};
 
 void gen_lval(Node *node)
 {
@@ -105,6 +111,15 @@ void gen(Node *node)
     }
     case ND_FUNC:
     {
+        int i = 0;
+        Node *p = node->args;
+        while (p)
+        {
+            printf("  mov %s, %d\n", arg_labels[i], p->val);
+            p = p->args;
+            ++i;
+        }
+
         printf("  call foo\n");
         return;
     }

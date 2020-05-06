@@ -86,6 +86,7 @@ struct Node
     int val;       // kindがND_NUMの場合のみ使う
     int offset;    // kindがND_LVARの場合のみ使う
     Node *next;    // kindがND_BLOCKの場合のみ使う
+    Node *args;    // kindがND_FUNCの場合のみ使う
 };
 
 // グローバル変数
