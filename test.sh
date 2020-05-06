@@ -16,6 +16,26 @@ assert() {
     fi
 }
 
+assert_func() {
+    expected="$1"
+    func="$2"
+    input="$3"
+
+    ./9cc "$input" > tmp.s
+    cc -c $func -o func.o
+    cc -o tmp tmp.s func.o
+    ./tmp
+    actual="$?"
+
+    if [ "$actual" = "$expected" ]; then
+      echo "$input => $actual"
+    else
+      echo "$input => $expected expected, but got $actual"
+      exit 1
+    fi
+
+}
+
 # 基礎的な四則演算ができる
 assert 0 "0;"
 assert 42 "42;"
@@ -250,10 +270,35 @@ while(a<100){
 return a;
 '
 
+echo '
+#include <stdio.h>
+void foo()
+{
+  printf("hello");
+}
+' > tmp.c
+
 # 引数なしの関数が呼び出せる
-assert 1'
-foo(3,4);
+assert_func 1 tmp.c '
+foo();
 return 1; 
-'
+' 
+
+echo '
+#include <stdio.h>
+void foo(int x, int y)
+{
+  printf("sum: %d", x+y);
+}
+' > tmp.c
+
+## 引数ありの関数が呼び出せる
+assert_func 1 tmp.c '
+sum(3,10);
+return 1; 
+' 
+
+
+rm tmp.c
 
 echo OK
