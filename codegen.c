@@ -120,6 +120,7 @@ void gen(Node *node)
             ++i;
         }
 
+        // TODO関数のRSPを16アラインする必要あり
         printf("  call foo\n");
         return;
     }
