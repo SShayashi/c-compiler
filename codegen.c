@@ -18,6 +18,18 @@ void gen_lval(Node *node)
     printf("  push rax\n");
 }
 
+void gen_args(Node *node)
+{
+    int i = 0;
+    Node *p = node->args;
+    while (p)
+    {
+        printf("  mov %s, %d\n", arg_labels[i], p->val);
+        p = p->args;
+        ++i;
+    }
+}
+
 void gen(Node *node)
 {
     switch (node->kind)
@@ -111,17 +123,22 @@ void gen(Node *node)
     }
     case ND_FUNC:
     {
-        int i = 0;
-        Node *p = node->args;
-        while (p)
-        {
-            printf("  mov %s, %d\n", arg_labels[i], p->val);
-            p = p->args;
-            ++i;
-        }
 
-        // TODO関数のRSPを16アラインする必要あり
+        int label = label_num++;
+        // 16bitアライメントを行う
+        printf("  mov rax, rsp\n");
+        printf("  and rax, 15\n");
+        printf("  jnz .L.call.%d\n", label); // 0以外だったらjamp
+        gen_args(node);
         printf("  call foo\n");
+        printf("  jmp .L.end.%d\n", label);
+        printf(".L.call.%d:\n", label);
+        printf("  sub rsp, 8\n");
+        gen_args(node);
+        printf("  call foo\n");
+        printf(" add rsp, 8\n");
+        printf(".L.end.%d:\n", label);
+        printf("  push rax\n");
         return;
     }
     case ND_RETURN:
