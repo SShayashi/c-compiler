@@ -36,6 +36,20 @@ assert_func() {
 
 }
 
+# 関数が定義できて実行できる
+assert 1 '
+foo()
+{
+  return 1;
+}
+
+main(){
+  a = foo();
+  return a;  
+}
+
+'
+
 # 関数呼び出し
 ## 引数なしの関数が呼び出せるs
 echo '
