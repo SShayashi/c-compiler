@@ -121,7 +121,7 @@ void gen(Node *node)
         }
         return;
     }
-    case ND_FUNC:
+    case ND_FUN_CALL:
     {
 
         int label = label_num++;

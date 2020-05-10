@@ -66,7 +66,7 @@ typedef enum
     ND_BIG,    // >
     ND_ASSIGN, // =
     ND_LVAR,   // ローカル変数
-    ND_FUNC,   // 関数
+    ND_FUN_CALL,   // 関数
     ND_IF,     // if
     ND_ELSE,   // else
     ND_FOR,    // for
@@ -86,7 +86,7 @@ struct Node
     int val;       // kindがND_NUMの場合のみ使う
     int offset;    // kindがND_LVARの場合のみ使う
     Node *next;    // kindがND_BLOCKの場合のみ使う
-    Node *args;    // kindがND_FUNCの場合のみ使う
+    Node *args;    // kindがND_FUN_CALLの場合のみ使う
 };
 
 // グローバル変数
