@@ -1,5 +1,8 @@
+#define _POSIX_C_SOURCE 200809L
 #include <stdio.h>
 #include <stdbool.h>
+#include <stdlib.h>
+#include <string.h>
 
 //
 // Tokenizer
@@ -40,39 +43,30 @@ struct LVar
     int offset; // RBPからのオフセット
 };
 
-typedef struct Function Function;
-
-struct Function
-{
-    Function *next; // 次の関数を指す
-    char *name;     // 関数の名前
-    int *len;       // 名前の長さ
-                    // 引数の数（TODO:）
-};
-
 //
 // Parser
 //
 typedef enum
 {
-    ND_ADD,    // +
-    ND_SUB,    // -
-    ND_MUL,    // *
-    ND_DIV,    // /
-    ND_NUM,    // 整数
-    ND_EQ,     // ==
-    ND_NEQ,    // !=
-    ND_EQBIG,  // >=
-    ND_BIG,    // >
-    ND_ASSIGN, // =
-    ND_LVAR,   // ローカル変数
-    ND_FUN_CALL,   // 関数
-    ND_IF,     // if
-    ND_ELSE,   // else
-    ND_FOR,    // for
-    ND_WHILE,  // while
-    ND_BLOCK,  // {}
-    ND_RETURN  // return
+    ND_ADD,      // +
+    ND_SUB,      // -
+    ND_MUL,      // *
+    ND_DIV,      // /
+    ND_NUM,      // 整数
+    ND_EQ,       // ==
+    ND_NEQ,      // !=
+    ND_EQBIG,    // >=
+    ND_BIG,      // >
+    ND_ASSIGN,   // =
+    ND_LVAR,     // ローカル変数
+    ND_FUN_CALL, // 関数呼び出し
+    ND_FUN_DEF,  //関数定義
+    ND_IF,       // if
+    ND_ELSE,     // else
+    ND_FOR,      // for
+    ND_WHILE,    // while
+    ND_BLOCK,    // {}
+    ND_RETURN    // return
 } NodeKind;
 
 typedef struct Node Node;
@@ -80,13 +74,25 @@ typedef struct Node Node;
 // 抽象構文木のノードの型
 struct Node
 {
-    NodeKind kind; // ノードの型
-    Node *lhs;     // 左辺
-    Node *rhs;     // 右辺
-    int val;       // kindがND_NUMの場合のみ使う
-    int offset;    // kindがND_LVARの場合のみ使う
-    Node *next;    // kindがND_BLOCKの場合のみ使う
-    Node *args;    // kindがND_FUN_CALLの場合のみ使う
+    NodeKind kind;  // ノードの型
+    Node *lhs;      // 左辺
+    Node *rhs;      // 右辺
+    int val;        // kindがND_NUMの場合のみ使う
+    int offset;     // kindがND_LVARの場合のみ使う
+    Node *next;     // kindがND_BLOCKの場合のみ使う
+    Node *args;     // kindがND_FUN_CALLの場合のみ使う
+    char *funcname; // kindがND_FUN_CALLの場合のみ使う
+};
+
+typedef struct Function Function;
+
+struct Function
+{
+    Function *next;
+    Node *node;
+    char *name;     // 関数の名前
+    LVar *locals;   // 引数
+    int stack_size; // 引数のためのスタックサイズ
 };
 
 // グローバル変数
@@ -96,6 +102,7 @@ extern Token *token;
 extern char *user_input;
 // プログラムの各行が入った配列
 extern Node *code[100];
+extern Function *functions;
 // ローカル変数
 extern LVar *locals;
 
@@ -110,15 +117,18 @@ extern Token *consume_indent();
 extern bool consume(char *op);
 extern void expect(char *op);
 extern int expect_number();
+char *expect_ident(void);
 extern bool at_eof();
 extern Token *new_token(TokenKind kind, Token *cur, char *str, int len);
 extern Token *tokenize(char *p);
 
 // parce.c
+extern Function *parse();
+extern Function *funcdef();
 extern LVar *find_lvar(Token *tok);
 extern Node *new_node(NodeKind kind, Node *lhs, Node *rhs);
 extern Node *new_node_num(int val);
-extern void program();
+extern Function *program();
 extern Node *stmt();
 extern Node *expr();
 extern Node *assign();

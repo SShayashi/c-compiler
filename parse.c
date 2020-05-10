@@ -1,10 +1,8 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include "9cc.h"
 
 Node *code[100];
 LVar *locals = NULL;
+Function *functions = NULL;
 
 LVar *find_lvar(Token *tok)
 {
@@ -31,15 +29,41 @@ Node *new_node_num(int val)
     return node;
 }
 
-// program = stmt*
-void program()
+// program = function*
+Function *program()
 {
-    int i = 0;
-    while (!at_eof())
-        code[i++] = stmt();
-    code[i] = NULL;
+    Function head = {}; // これの意味知りたい
+    Function *cur = &head;
+
+    while (token->kind != TK_EOF)
+        cur = cur->next = funcdef();
+    return head.next;
 }
 
+// funcdef = ident"(" (num | num ("," num)*)?  ")" "{" stmt* "}"
+// funcdef = ident"(" ")" "{" stmt* "}" ←まずはこちら
+Function *funcdef()
+{
+    locals = NULL;
+
+    char *name = expect_ident();
+    expect("(");
+    // まずは引数なしの関数定義をparseする
+    expect(")");
+    expect("{");
+    Node head = {};
+    Node *cur = &head;
+    while (!consume("}"))
+    {
+        cur->next = stmt();
+        cur = cur->next;
+    }
+    Function *func = calloc(1, sizeof(Function));
+    func->name = name;
+    func->node = head.next;
+    func->locals = locals;
+    return func;
+}
 /* stmt = expr ";"
  *       | "{" stmt* "}"
  *       | "if" "(" expr ")" stmt ("else" stmt)?

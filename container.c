@@ -1,8 +1,8 @@
+#include "9cc.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
-#include "9cc.h"
 
 // エラーを報告するための関数
 // printfと同じ引数を取る
@@ -60,8 +60,17 @@ bool consume_return()
     return true;
 }
 
-// 次のトークンが変数の場合，トークンを1つ詠み進めて
-// 変数のトークンを返す，それ以外はNullを返す
+// Ensure that the current token is TK_IDENT.
+char *expect_ident(void)
+{
+    if (token->kind != TK_INDENT)
+        error_at(token->str, "識別子ではありません");
+    char *s = strndup(token->str, token->len);
+    token = token->next;
+    return s;
+}
+// 次のトークンが変数もしくは関数名の場合，トークンを1つ詠み進めて
+// 変数か関数名のトークンを返す，それ以外はNullを返す
 Token *consume_indent()
 {
     if (token->kind != TK_INDENT)
