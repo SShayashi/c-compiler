@@ -80,8 +80,11 @@ Node *stmt()
         node = calloc(1, sizeof(Node));
         node->kind = ND_RETURN;
         node->lhs = expr();
+        expect(";");
+        return node;
     }
-    else if (consume_token(TK_IF))
+
+    if (consume_token(TK_IF))
     {
         node = calloc(1, sizeof(Node));
         node->kind = ND_IF;
@@ -97,7 +100,8 @@ Node *stmt()
 
         return node;
     }
-    else if (consume_token(TK_FOR))
+
+    if (consume_token(TK_FOR))
     {
         node = calloc(1, sizeof(Node));
         node->kind = ND_FOR;
@@ -133,7 +137,8 @@ Node *stmt()
         node_second->rhs = stmt(); // D
         return node;
     }
-    else if (consume_token(TK_WHILE))
+
+    if (consume_token(TK_WHILE))
     {
         node = calloc(1, sizeof(Node));
         node->kind = ND_WHILE;
@@ -143,7 +148,8 @@ Node *stmt()
         node->rhs = stmt();
         return node;
     }
-    else if (consume("{"))
+
+    if (consume("{"))
     {
         Node head = {};
         Node *cur = &head;
@@ -159,10 +165,8 @@ Node *stmt()
         node->body = head.next;
         return node;
     }
-    else
-    {
-        node = expr();
-    }
+
+    node = expr();
     expect(";");
     return node;
 }
