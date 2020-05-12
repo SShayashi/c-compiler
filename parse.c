@@ -268,7 +268,7 @@ Node *primary()
         return node;
     }
 
-    Token *tok = consume_indent();
+    Token *tok = consume_ident();
     if (tok && consume("("))
     {
         Node *node = calloc(1, sizeof(Node));

@@ -114,7 +114,7 @@ extern void error(char *fmt, ...);
 extern void error_at(char *loc, char *fmt, ...);
 extern bool consume_token(TokenKind kind);
 extern bool consume_return();
-extern Token *consume_indent();
+extern Token *consume_ident();
 extern bool consume(char *op);
 extern void expect(char *op);
 extern int expect_number();

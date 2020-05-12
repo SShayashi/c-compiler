@@ -71,7 +71,7 @@ char *expect_ident(void)
 }
 // 次のトークンが変数もしくは関数名の場合，トークンを1つ詠み進めて
 // 変数か関数名のトークンを返す，それ以外はNullを返す
-Token *consume_indent()
+Token *consume_ident()
 {
     if (token->kind != TK_IDENT)
         return NULL;
