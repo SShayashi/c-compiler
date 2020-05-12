@@ -1,4 +1,5 @@
 #define _POSIX_C_SOURCE 200809L
+#include <ctype.h>
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
@@ -120,8 +121,6 @@ extern void expect(char *op);
 extern int expect_number();
 char *expect_ident(void);
 extern bool at_eof();
-extern Token *new_token(TokenKind kind, Token *cur, char *str, int len);
-extern Token *tokenize(char *p);
 
 // parce.c
 extern Function *parse();
@@ -141,4 +140,7 @@ extern Node *unary();
 extern Node *primary();
 
 // codegen.c
-extern void gen(Node *node);
+extern void codegen(Function *pg);
+
+// tokenize.c
+extern Token *tokenize(char *p);

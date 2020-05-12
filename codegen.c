@@ -1,15 +1,17 @@
 #include <stdio.h>
 #include "9cc.h"
 
-int label_num = 0;
-char *arg_labels[4] = {
+// 関数名の一時保存先
+static char *funcname;
+static int label_num = 0;
+static char *arg_labels[4] = {
     "rdi",
     "rsi",
     "rds",
     "rcx",
 };
 
-void gen_lval(Node *node)
+static void gen_lval(Node *node)
 {
     if (node->kind != ND_LVAR)
         error("代入の左辺値が変数ではありません");
@@ -18,7 +20,7 @@ void gen_lval(Node *node)
     printf("  push rax\n");
 }
 
-void gen_args(Node *node)
+static void gen_args(Node *node)
 {
     int i = 0;
     Node *p = node->args;
@@ -30,7 +32,7 @@ void gen_args(Node *node)
     }
 }
 
-void gen(Node *node)
+static void gen(Node *node)
 {
     switch (node->kind)
     {
@@ -192,4 +194,45 @@ void gen(Node *node)
     }
 
     printf("  push rax\n");
+}
+
+void codegen(Function *pg)
+{
+    // ローカル変数のoffsetを計算して，各関数ポインタに入れていく
+    for (Function *fn = pg; fn; fn = fn->next)
+    {
+        int offset = 0;
+        for (LVar *var = pg->locals; var; var = var->next)
+        {
+            offset += 8;
+            var->offset = offset;
+        }
+        fn->stack_size = offset;
+    }
+
+    // アセンブリの前半部分を出力
+    printf(".intel_syntax noprefix\n");
+
+    //TODO ここで各関数のStacksize計算する
+    for (Function *fn = pg; fn; fn = fn->next)
+    {
+        printf(".global main\n");
+        printf("%s:\n", fn->name);
+        funcname = fn->name;
+
+        // プロローグ
+        printf("  push rbp\n");
+        printf("  mov rbp, rsp\n");
+        printf("  sub rsp, %d\n", fn->stack_size);
+
+        // アセンブリコードの出力
+        for (Node *node = fn->node; node; node = node->next)
+            gen(node);
+
+        // エピローグ
+        printf(".L.return.%s:\n", funcname);
+        printf("  mov rsp, rbp\n");
+        printf("  pop rbp\n");
+        printf("  ret\n");
+    }
 }

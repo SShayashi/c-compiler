@@ -7,7 +7,7 @@
 // 現在着目しているトークン
 Token *token;
 
-int is_alnum(char c)
+static int is_alnum(char c)
 {
     return ('a' <= c && c <= 'z') ||
            ('A' <= c && c <= 'Z') ||
@@ -16,7 +16,7 @@ int is_alnum(char c)
 }
 
 // 新しいトークンを作成してcurに繋げる
-Token *new_token(TokenKind kind, Token *cur, char *str, int len)
+static Token *new_token(TokenKind kind, Token *cur, char *str, int len)
 {
     Token *tok = calloc(1, sizeof(Token));
     tok->kind = kind;
@@ -26,7 +26,7 @@ Token *new_token(TokenKind kind, Token *cur, char *str, int len)
     return tok;
 }
 
-bool startswith(char *p, char *q)
+static bool startswith(char *p, char *q)
 {
     return memcmp(p, q, strlen(q)) == 0;
 }
