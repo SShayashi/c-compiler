@@ -145,15 +145,18 @@ Node *stmt()
     }
     else if (consume("{"))
     {
-        node = calloc(1, sizeof(Node));
-        node->kind = ND_BLOCK;
-        Node *p = node;
+        Node head = {};
+        Node *cur = &head;
+
         while (!consume("}"))
         {
-            p->next = stmt();
-            p = p->next;
+            cur->next = stmt();
+            cur = cur->next;
         }
-        p = NULL;
+
+        Node *node = calloc(1, sizeof(Node));
+        node->kind = ND_BLOCK;
+        node->body = head.next;
         return node;
     }
     else

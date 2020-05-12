@@ -112,12 +112,10 @@ void gen(Node *node)
     }
     case ND_BLOCK:
     {
-        Node *p = node;
-        while (p->next)
+        for (Node *p = node->body; p; p = p->next)
         {
-            gen(p->next);
+            gen(p);
             printf("  pop rax\n");
-            p = p->next;
         }
         return;
     }

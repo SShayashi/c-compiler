@@ -65,14 +65,15 @@ main(){
   }
 }
 '
+assert 3 'main() { {1; {2;} return 3;} }'
+
+assert 10 'main() { i=0; while(i<10) i=i+1; return i; }'
 
 ## blockで囲むだけのことができる
-assert 10 '
+assert 99 '
 main(){
   {
-  a = 10;
-  b = 20;
-  c = 30;
+  a = 99;
   }
   return a;
 }
