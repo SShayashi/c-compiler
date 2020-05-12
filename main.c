@@ -89,7 +89,7 @@ Token *tokenize(char *p)
         if (isalpha(*p))
         {
             char *q = p;
-            cur = new_token(TK_INDENT, cur, p, 0);
+            cur = new_token(TK_IDENT, cur, p, 0);
             while (isalpha(*p))
                 p++;
             cur->len = p - q;

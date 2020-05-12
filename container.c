@@ -63,7 +63,7 @@ bool consume_return()
 // Ensure that the current token is TK_IDENT.
 char *expect_ident(void)
 {
-    if (token->kind != TK_INDENT)
+    if (token->kind != TK_IDENT)
         error_at(token->str, "識別子ではありません");
     char *s = strndup(token->str, token->len);
     token = token->next;
@@ -73,7 +73,7 @@ char *expect_ident(void)
 // 変数か関数名のトークンを返す，それ以外はNullを返す
 Token *consume_indent()
 {
-    if (token->kind != TK_INDENT)
+    if (token->kind != TK_IDENT)
         return NULL;
     Token *intent = token;
     token = token->next;
