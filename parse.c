@@ -273,6 +273,7 @@ Node *primary()
     }
 
     Token *tok = consume_ident();
+    // 関数呼び出しの場合
     if (tok && consume("("))
     {
         Node *node = calloc(1, sizeof(Node));
@@ -293,7 +294,9 @@ Node *primary()
         // TODO 二重定義かどうかを調べることも必要
         return node;
     }
-    else if (tok)
+
+    // 変数の場合
+    if (tok)
     {
         // 変数
         Node *node = calloc(1, sizeof(Node));
