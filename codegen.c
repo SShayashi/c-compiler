@@ -4,11 +4,13 @@
 // 関数名の一時保存先
 static char *funcname;
 static int label_num = 0;
-static char *arg_labels[4] = {
+static char *arg_labels[] = {
     "rdi",
     "rsi",
     "rds",
     "rcx",
+    "r8",
+    "r9",
 };
 
 static void gen_lval(Node *node)
