@@ -1,10 +1,21 @@
 #!/bin/bash
+
+cat <<EOF | gcc -xc -c -o tmp2.o -
+int ret3() { return 3; }
+int ret5() { return 5; }
+int add(int x, int y) { return x+y; }
+int sub(int x, int y) { return x-y; }
+int add6(int a, int b, int c, int d, int e, int f) {
+  return a+b+c+d+e+f;
+}
+EOF
+
 assert() {
     expected="$1"
     input="$2"
 
     ./9cc "$input" > tmp.s
-    cc -o tmp tmp.s
+    cc -o tmp tmp.s tmp2.o
     ./tmp
     actual="$?"
 
@@ -36,7 +47,11 @@ assert_func() {
 
 }
 
-assert 0 'main() { return 0; }'
+assert 32 'int main() { return ret32(); } int ret32() { return 32; }'
+assert 7 'int main() { return add2(3,4); } int add2(int x, int y) { return x+y; }'
+assert 1 'int main() { return sub2(4,3); } int sub2(int x, int y) { return x-y; }'
+assert 55 'int main() { return fib(9); } int fib(int x) { if (x<=1) return 1; return fib(x-1) + fib(x-2); }'
+
 
 # 引数なしの関数が定義できて実行できる
 assert 1 '
