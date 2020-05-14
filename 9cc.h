@@ -93,7 +93,8 @@ struct Function
     Function *next;
     Node *node;
     char *name;     // 関数の名前
-    LVar *locals;   // 引数
+    LVar *args;     // 引数
+    LVar *locals;   // ローカル変数
     int stack_size; // 引数のためのスタックサイズ
 };
 

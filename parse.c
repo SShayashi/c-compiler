@@ -12,6 +12,16 @@ LVar *find_lvar(Token *tok)
     return NULL;
 }
 
+static LVar *new_lvar(char *name)
+{
+    LVar *var = calloc(1, sizeof(LVar));
+    var->name = name;
+    // var->ty = ty; 将来の型情報
+    var->next = locals;
+    locals = var;
+    return var;
+}
+
 Node *new_node(NodeKind kind, Node *lhs, Node *rhs)
 {
     Node *node = calloc(1, sizeof(Node));
@@ -46,22 +56,34 @@ Function *funcdef()
 {
     locals = NULL;
 
+    // 関数宣言部分
+    LVar lvar_head = {};
+    LVar *lvar_cur = &lvar_head;
     char *name = expect_ident();
     expect("(");
-    // まずは引数なしの関数定義をparseする
-    expect(")");
+    while (!consume(")"))
+    {
+        if (lvar_cur != &lvar_head)
+            consume(",");
+        char *ident = expect_ident();
+        lvar_cur = new_lvar(ident);
+        lvar_cur = lvar_cur->next;
+    }
+
+    // 関数定義部分
     expect("{");
-    Node head = {};
-    Node *cur = &head;
+    Node node_head = {};
+    Node *node_cur = &node_head;
     while (!consume("}"))
     {
-        cur->next = stmt();
-        cur = cur->next;
+        node_cur->next = stmt();
+        node_cur = node_cur->next;
     }
     Function *func = calloc(1, sizeof(Function));
     func->name = name;
-    func->node = head.next;
+    func->node = node_head.next;
     func->locals = locals;
+    func->args = lvar_head.next;
     return func;
 }
 /* stmt = expr ";"

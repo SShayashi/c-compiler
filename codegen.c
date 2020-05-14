@@ -4,15 +4,7 @@
 // 関数名の一時保存先
 static char *funcname;
 static int label_num = 0;
-static char *arg_labels[] = {
-    "rdi",
-    "rsi",
-    "rds",
-    "rcx",
-    "r8",
-    "r9",
-};
-
+static char *argreg[] = {"rdi", "rsi", "rdx", "rcx", "r8", "r9"};
 static void gen_lval(Node *node)
 {
     if (node->kind != ND_LVAR)
@@ -28,7 +20,7 @@ static void gen_args(Node *node)
     Node *p = node->args;
     while (p)
     {
-        printf("  mov %s, %d\n", arg_labels[i], p->val);
+        printf("  mov %s, %d\n", argreg[i], p->val);
         p = p->args;
         ++i;
     }
@@ -227,6 +219,13 @@ void codegen(Function *pg)
         printf("  mov rbp, rsp\n");
         printf("  sub rsp, %d\n", fn->stack_size);
 
+        // 引数用のスタックを用意
+        int i = 0;
+        for (LVar *var = fn->args; var; var = var->next)
+            i++;
+
+        for (LVar *var = fn->args; var; var = var->next)
+            printf("  mov [rbp-%d], %s\n", var->offset, argreg[--i]);
         // アセンブリコードの出力
         for (Node *node = fn->node; node; node = node->next)
             gen(node);
