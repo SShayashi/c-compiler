@@ -283,6 +283,25 @@ Node *unary()
     return primary();
 }
 
+// funcall = ident "(" (assign ("," assign)*)? ")"
+Node *funcall(Token *tk)
+{
+    Node head = {};
+    Node *cur = &head;
+    while (!consume(")"))
+    {
+        if (cur != &head)
+            consume(",");
+        cur->next = assign();
+        cur = cur->next;
+    }
+    Node *node = calloc(1, sizeof(Node));
+    node->funcname = strndup(tk->str, tk->len);
+    node->kind = ND_FUN_CALL;
+    node->args = head.next;
+    return node;
+}
+
 // primary = num | indent ( "(" ")")? |  "(" expr ")"
 Node *primary()
 {
@@ -297,25 +316,7 @@ Node *primary()
     Token *tok = consume_ident();
     // 関数呼び出しの場合
     if (tok && consume("("))
-    {
-        Node *node = calloc(1, sizeof(Node));
-        node->kind = ND_FUN_CALL;
-        Node *p = node;
-        while (!consume(")"))
-        {
-            p->args = new_node_num(expect_number());
-            p = p->args;
-            if (!consume(","))
-            {
-                expect(")");
-                break;
-            }
-        }
-        p->args = NULL;
-        // TODO 名前を保存
-        // TODO 二重定義かどうかを調べることも必要
-        return node;
-    }
+        return funcall(tok);
 
     // 変数の場合
     if (tok)

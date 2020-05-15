@@ -21,7 +21,7 @@ static void gen_args(Node *node)
     while (p)
     {
         printf("  mov %s, %d\n", argreg[i], p->val);
-        p = p->args;
+        p = p->next;
         ++i;
     }
 }
@@ -124,12 +124,12 @@ static void gen(Node *node)
         printf("  and rax, 15\n");
         printf("  jnz .L.call.%d\n", label); // 0以外だったらjamp
         gen_args(node);
-        printf("  call foo\n");
+        printf("  call %s\n", node->funcname);
         printf("  jmp .L.end.%d\n", label);
         printf(".L.call.%d:\n", label);
         printf("  sub rsp, 8\n");
         gen_args(node);
-        printf("  call foo\n");
+        printf("  call %s\n", node->funcname);
         printf(" add rsp, 8\n");
         printf(".L.end.%d:\n", label);
         printf("  push rax\n");
@@ -207,7 +207,6 @@ void codegen(Function *pg)
     // アセンブリの前半部分を出力
     printf(".intel_syntax noprefix\n");
 
-    //TODO ここで各関数のStacksize計算する
     for (Function *fn = pg; fn; fn = fn->next)
     {
         printf(".global main\n");
