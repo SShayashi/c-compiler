@@ -56,7 +56,7 @@ Function *funcdef()
 {
     locals = NULL;
 
-    // 関数宣言部分
+    // 関数の引数まで読む
     LVar lvar_head = {};
     LVar *lvar_cur = &lvar_head;
     char *name = expect_ident();
@@ -67,10 +67,12 @@ Function *funcdef()
             consume(",");
         char *ident = expect_ident();
         lvar_cur = new_lvar(ident);
-        lvar_cur = lvar_cur->next;
     }
 
-    // 関数定義部分
+    Function *func = calloc(1, sizeof(Function));
+    func->args = locals;
+
+    // 関数のブロック部分を読む
     expect("{");
     Node node_head = {};
     Node *node_cur = &node_head;
@@ -79,11 +81,10 @@ Function *funcdef()
         node_cur->next = stmt();
         node_cur = node_cur->next;
     }
-    Function *func = calloc(1, sizeof(Function));
+
     func->name = name;
     func->node = node_head.next;
     func->locals = locals;
-    func->args = lvar_head.next;
     return func;
 }
 /* stmt = expr ";"
