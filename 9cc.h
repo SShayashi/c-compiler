@@ -79,7 +79,7 @@ struct Node
     Node *lhs;     // 左辺
     Node *rhs;     // 右辺
     int val;       // kindがND_NUMの場合のみ使う
-    int offset;    // kindがND_LVARの場合のみ使う
+    LVar *var;     // kindがND_LVARの場合のみ使う
     Node *next;    // kindがND_BLOCKの場合のみ使う
     Node *body;
     Node *args;     // kindがND_FUN_CALLの場合のみ使う

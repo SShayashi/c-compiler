@@ -27,45 +27,14 @@ assert() {
     fi
 }
 
-assert_func() {
-    expected="$1"
-    func="$2"
-    input="$3"
 
-    ./9cc "$input" > tmp.s
-    cc -c $func -o func.o
-    cc -o tmp tmp.s func.o
-    ./tmp
-    actual="$?"
-
-    if [ "$actual" = "$expected" ]; then
-      echo "$input => $actual"
-    else
-      echo "$input => $expected expected, but got $actual"
-      exit 1
-    fi
-
-}
-
-assert 32 'int main() { return ret32(); } int ret32() { return 32; }'
-assert 7 'int main() { return add2(3,4); } int add2(int x, int y) { return x+y; }'
-assert 1 'int main() { return sub2(4,3); } int sub2(int x, int y) { return x-y; }'
-assert 55 'int main() { return fib(9); } int fib(int x) { if (x<=1) return 1; return fib(x-1) + fib(x-2); }'
-
+assert 32 'main() { return ret32(); } ret32() { return 32; }'
+assert 7 'main() { return add2(3,4); } add2(x, y) { return x+y; }'
+assert 1 'main() { return sub2(4,3); } sub2(x, y) { return x-y; }'
+assert 55 'main() { return fib(9); } fib(x) { if (x<=1) return 1; return fib(x-1) + fib(x-2); }'
 
 # 引数なしの関数が定義できて実行できる
-assert 1 '
-foo()
-{
-  return 1;
-}
-
-main(){
-  a = foo();
-  return a;  
-}
-
-'
+assert 1 'foo() { return 1; } main(){ a = foo(); return a;}'
 
 
 # block機能
