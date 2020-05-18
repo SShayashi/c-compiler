@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include "9cc.h"
 
+//関数定義
+static void gen(Node *node);
+
 // 関数名の一時保存先
 static char *funcname;
 static int label_num = 0;
@@ -20,7 +23,9 @@ static void gen_args(Node *node)
     Node *p = node->args;
     while (p)
     {
-        printf("  mov %s, %d\n", argreg[i], p->val);
+        // printf("  mov %s, %d\n", argreg[i], p->val);
+        gen(p);
+        printf("  pop %s\n", argreg[i]);
         p = p->next;
         ++i;
     }
