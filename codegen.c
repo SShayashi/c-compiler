@@ -20,14 +20,10 @@ static void gen_lval(Node *node)
 static void gen_args(Node *node)
 {
     int i = 0;
-    Node *p = node->args;
-    while (p)
+    for (Node *p = node->args; p; p = p->next)
     {
-        // printf("  mov %s, %d\n", argreg[i], p->val);
         gen(p);
-        printf("  pop %s\n", argreg[i]);
-        p = p->next;
-        ++i;
+        printf("  pop %s\n", argreg[i++]);
     }
 }
 

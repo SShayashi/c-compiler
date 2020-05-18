@@ -1,6 +1,5 @@
 #include "9cc.h"
 
-Node *code[100];
 LVar *locals = NULL;
 Function *functions = NULL;
 
