@@ -326,17 +326,12 @@ Node *primary()
         // 変数
         Node *node = calloc(1, sizeof(Node));
         node->kind = ND_LVAR;
-
         LVar *lvar = find_lvar(tok);
+        char *name = strndup(tok->str, tok->len);
         if (lvar)
-        {
-            node->var = lvar;
-        }
+            node->var = lvar; //既に同盟の変数がある場合
         else
-        {
-            char *name = strndup(tok->str, tok->len);
-            node->var = new_lvar(name);
-        }
+            node->var = new_lvar(name); //新しい変数の場合
         return node;
     }
 
