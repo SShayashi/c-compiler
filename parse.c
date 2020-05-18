@@ -18,6 +18,8 @@ static LVar *new_lvar(char *name)
     var->name = name;
     // var->ty = ty; 将来の型情報
     var->next = locals;
+
+    var->len = strlen(name);
     locals = var;
     return var;
 }

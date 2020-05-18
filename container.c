@@ -60,7 +60,7 @@ bool consume_return()
     return true;
 }
 
-// Ensure that the current token is TK_IDENT.
+// TK_IDENTから１つつtokenを進め読み込んだ識別子を文字列で返す
 char *expect_ident(void)
 {
     if (token->kind != TK_IDENT)

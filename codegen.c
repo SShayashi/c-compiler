@@ -190,18 +190,22 @@ static void gen(Node *node)
     printf("  push rax\n");
 }
 
+static int align_to(int n, int align)
+{
+    return (n + align - 1) & ~(align - 1);
+}
 void codegen(Function *pg)
 {
     // ローカル変数のoffsetを計算して，各関数ポインタに入れていく
     for (Function *fn = pg; fn; fn = fn->next)
     {
         int offset = 0;
-        for (LVar *var = pg->locals; var; var = var->next)
+        for (LVar *var = fn->locals; var; var = var->next)
         {
             offset += 8;
             var->offset = offset;
         }
-        fn->stack_size = offset;
+        fn->stack_size = align_to(offset, 16);
     }
 
     // アセンブリの前半部分を出力
@@ -209,7 +213,7 @@ void codegen(Function *pg)
 
     for (Function *fn = pg; fn; fn = fn->next)
     {
-        printf(".global main\n");
+        printf(".global %s\n", fn->name);
         printf("%s:\n", fn->name);
         funcname = fn->name;
 
