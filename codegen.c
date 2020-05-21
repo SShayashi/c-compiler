@@ -32,15 +32,18 @@ static void gen(Node *node)
     switch (node->kind)
     {
     case ND_NUM:
+        printf("# == read num  == #\n");
         printf("  push %d\n", node->val);
         return;
     case ND_LVAR:
+        printf("# == read local value == #\n");
         gen_lval(node);
         printf("  pop rax\n");
         printf("  mov rax, [rax]\n");
         printf("  push rax\n");
         return;
     case ND_ASSIGN:
+        printf("# == assign local value== #\n");
         gen_lval(node->lhs);
         gen(node->rhs);
 
@@ -51,10 +54,11 @@ static void gen(Node *node)
         return;
     case ND_IF:
     {
+        int cur_if_num = label_num++;
+        printf("# == if:%d == #\n", cur_if_num);
         gen(node->lhs);
         printf("  pop rax\n");
         printf("  cmp rax, 0\n");
-        int cur_if_num = label_num++;
         if (node->rhs->kind == ND_ELSE)
         {
             printf("  je .Lelse%d\n", cur_if_num);
@@ -74,11 +78,11 @@ static void gen(Node *node)
     }
     case ND_FOR:
     {
-
+        int cur_for_num = label_num++;
+        printf("# == for:%d == #\n", cur_for_num);
         // for(A;B;C) D
         if (node->lhs)
             gen(node->lhs); // A
-        int cur_for_num = label_num++;
         printf(".Lbegin%d:\n", cur_for_num);
         if (node->rhs->lhs)
         {
@@ -97,6 +101,7 @@ static void gen(Node *node)
     case ND_WHILE:
     {
         int cur_while_num = label_num++;
+        printf("# == while:%d == #\n", cur_while_num);
         printf(".Lbegin%d:\n", cur_while_num);
         gen(node->lhs);
         printf("  pop rax\n");
@@ -121,6 +126,7 @@ static void gen(Node *node)
 
         int label = label_num++;
         // 16bitアライメントを行う
+        printf("# == stmt function call == #\n");
         printf("  mov rax, rsp\n");
         printf("  and rax, 15\n");
         printf("  jnz .L.call.%d\n", label); // 0以外だったらjamp
@@ -137,6 +143,7 @@ static void gen(Node *node)
         return;
     }
     case ND_RETURN:
+        printf("# == return == #\n");
         gen(node->lhs);
         printf("  pop rax\n");
         printf("  mov rsp, rbp\n");
@@ -148,6 +155,7 @@ static void gen(Node *node)
     gen(node->lhs);
     gen(node->rhs);
 
+    printf("# == calclation == #\n");
     printf("  pop rdi\n");
     printf("  pop rax\n");
 
@@ -219,6 +227,7 @@ void codegen(Function *pg)
         funcname = fn->name;
 
         // プロローグ
+        printf("# == prologue %s == #\n", fn->name);
         printf("  push rbp\n");
         printf("  mov rbp, rsp\n");
         printf("  sub rsp, %d\n", fn->stack_size);
@@ -235,6 +244,7 @@ void codegen(Function *pg)
             gen(node);
 
         // エピローグ
+        printf("# == epilogue %s == #\n", fn->name);
         printf(".L.return.%s:\n", funcname);
         printf("  mov rsp, rbp\n");
         printf("  pop rbp\n");
