@@ -28,6 +28,8 @@ assert() {
 }
 
 
+# &, *の演算子が利用できる
+assert 3 'main() { x = 3; y = &x; return *y;}'
 
 # 関数を定義して呼び出せる
 assert 55 'main() { return fib(9); } fib(x) { if (x<=1) return 1; return fib(x-1) + fib(x-2); } '
