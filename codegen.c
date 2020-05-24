@@ -32,8 +32,19 @@ static void gen(Node *node)
     switch (node->kind)
     {
     case ND_NUM:
-        printf("# == read num  == #\n");
+        printf("# == gen num  == #\n");
         printf("  push %d\n", node->val);
+        return;
+    case ND_ADDR:
+        printf("# == gen pointer from & == #\n");
+        gen_lval(node->lhs);
+        return;
+    case ND_DEREF:
+        printf("# == gen pointer from * == #\n");
+        gen(node->lhs);
+        printf("  pop rax\n");
+        printf("  mov rax, [rax]\n");
+        printf("  push rax\n");
         return;
     case ND_LVAR:
         printf("# == read local value == #\n");

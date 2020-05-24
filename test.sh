@@ -29,6 +29,8 @@ assert() {
 
 
 # &, *の演算子が利用できる
+
+assert 3 'main() { x = 3; y = 5; z = &y - 8; return *z;}'
 assert 3 'main() { x = 3; y = &x; return *y;}'
 
 # 関数を定義して呼び出せる

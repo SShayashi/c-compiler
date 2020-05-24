@@ -59,6 +59,8 @@ typedef enum
     ND_EQBIG,    // >=
     ND_BIG,      // >
     ND_ASSIGN,   // =
+    ND_ADDR,     // *
+    ND_DEREF,    // &
     ND_LVAR,     // ローカル変数
     ND_FUN_CALL, // 関数呼び出し
     ND_FUN_DEF,  //関数定義
