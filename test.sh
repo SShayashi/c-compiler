@@ -28,8 +28,10 @@ assert() {
 }
 
 
-# &, *の演算子が利用できる
+#tmp int型の導入
+assert 3 'int main() { int x; x = 3; return x;}'
 
+# &, *の演算子が利用できる
 assert 3 'main() { x = 3; y = 5; z = &y - 8; return *z;}'
 assert 3 'main() { x = 3; y = &x; return *y;}'
 
