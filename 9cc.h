@@ -19,6 +19,7 @@ typedef enum
     TK_FOR,      // for
     TK_WHILE,    // while
     TK_RETURN,   // returnを表す
+    TK_INT,      // int型
     TK_EOF,      // 入力の終わりを表すトークン
 } TokenKind;
 
@@ -122,7 +123,8 @@ extern Token *consume_ident();
 extern bool consume(char *op);
 extern void expect(char *op);
 extern int expect_number();
-char *expect_ident(void);
+extern char *expect_ident(void);
+extern void expect_int();
 extern bool at_eof();
 
 // parce.c

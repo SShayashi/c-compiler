@@ -108,6 +108,14 @@ int expect_number()
     return val;
 }
 
+//次のトークンが型の場合，トークンを一つ詠み進めてその数値を返す
+void expect_int()
+{
+    if (token->kind != TK_INT)
+        error("型情報ではありません");
+    token = token->next;
+}
+
 bool at_eof()
 {
     return token->kind == TK_EOF;

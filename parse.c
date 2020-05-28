@@ -52,10 +52,13 @@ Function *program()
 }
 
 // funcdef = ident"(" (num | num ("," num)*)?  ")" "{" stmt* "}"
-// funcdef = ident"(" ")" "{" stmt* "}" ←まずはこちら
+// funcdef = "int" ident"(" ("int" num | "int" num ("," "int" num)*)?  ")" "{" stmt* "}"
 Function *funcdef()
 {
     locals = NULL;
+
+    // 現在は"int"型のみに対応させる
+    expect_int();
 
     // 関数の引数まで読む
     LVar lvar_head = {};
@@ -66,6 +69,7 @@ Function *funcdef()
     {
         if (lvar_cur != &lvar_head)
             consume(",");
+        expect_int();
         char *ident = expect_ident();
         lvar_cur = new_lvar(ident);
     }
@@ -187,6 +191,21 @@ Node *stmt()
         Node *node = calloc(1, sizeof(Node));
         node->kind = ND_BLOCK;
         node->body = head.next;
+        return node;
+    }
+
+    if (consume_token(TK_INT))
+    {
+        Token *tok = consume_ident();
+        Node *node = calloc(1, sizeof(Node));
+        node->kind = ND_LVAR;
+        LVar *lvar = find_lvar(tok);
+        char *name = strndup(tok->str, tok->len);
+        if (lvar)
+            error("%s は既に定義されている名前です", name);
+        else
+            node->var = new_lvar(name); //新しい変数の場合
+        expect(";");
         return node;
     }
 
